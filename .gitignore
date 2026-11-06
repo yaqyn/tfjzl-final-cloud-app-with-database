@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Local virtual environments
+djangoenv/
+.venv-django/
+
+# Submission artefact
+Django_Online_Course_Final_Project.zip

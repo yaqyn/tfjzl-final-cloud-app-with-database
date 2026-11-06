@@ -95,9 +95,49 @@ class Enrollment(models.Model):
     rating = models.FloatField(default=5.0)
 
 
-# One enrollment could have multiple submission
+# One enrollment could have multiple submissions
 # One submission could have multiple choices
 # One choice could belong to multiple submissions
-#class Submission(models.Model):
-#    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
-#    choices = models.ManyToManyField(Choice)
+class Question(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    content = models.CharField(max_length=200)
+    grade = models.IntegerField(default=50)
+
+    def __str__(self):
+        return "Question: " + self.content
+
+    def is_get_score(self, selected_ids):
+        """Return True only when the submitted choices exactly match
+        the complete set of correct choices for this question.
+
+        Selecting every correct choice is not enough: any extra incorrect
+        choice makes the answer wrong and the question earns no points.
+        """
+        selected_ids = set(selected_ids)
+        question_choice_ids = set(
+            self.choice_set.values_list('id', flat=True)
+        )
+        correct_ids = set(
+            self.choice_set.filter(is_correct=True).values_list('id', flat=True)
+        )
+        selected_for_question = selected_ids & question_choice_ids
+        return bool(correct_ids) and selected_for_question == correct_ids
+
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    content = models.CharField(max_length=200)
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.content
+
+
+class Submission(models.Model):
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+    choices = models.ManyToManyField(Choice)
+
+    def __str__(self):
+        return "Submission #{} by {}".format(
+            self.pk, self.enrollment.user.username
+        )

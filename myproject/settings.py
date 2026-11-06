@@ -117,6 +117,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Keep the starter project's implicit AutoField primary keys explicit so
+# `manage.py check` is clean on Django 4.2.
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/

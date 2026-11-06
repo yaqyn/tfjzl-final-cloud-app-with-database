@@ -1,0 +1,25 @@
+Browser evidence verification
+=============================
+Application: http://127.0.0.1:8000 (Django development server)
+Browser: Chromium via Playwright (headless)
+
+PASS  admin login page reachable  [http://127.0.0.1:8000/admin/login/?next=/admin/]
+PASS  admin authenticated
+PASS  admin shows Authentication and Authorization
+PASS  admin shows OnlineCourse
+PASS  admin shows OnlineCourse models
+PASS  course detail shows course name
+PASS  course detail shows lesson
+PASS  course detail shows authenticated exam
+PASS  exam panel expands
+PASS  question shown
+PASS  Django CSRF token present
+PASS  correct choice checkbox selected
+PASS  result page shows Congratulations
+PASS  result page shows score 100/100
+PASS  result page shows course name
+PASS  result page shows question
+PASS  result page shows correct answer
+PASS  result page is a real submission URL  [http://127.0.0.1:8000/onlinecourse/course/1/submission/1/result/]
+
+Result: 18/18 checks passed
