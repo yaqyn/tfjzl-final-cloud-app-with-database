@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError, transaction
 from django.test import TestCase
 from django.urls import reverse
+from unittest.mock import patch
 
 from .models import (
     Course,
@@ -164,6 +165,52 @@ class CourseDetailTemplateTests(OnlineCourseTestBase):
         )
         self.assertContains(response, 'Learning Django')
         self.assertContains(response, 'What is Django')
+
+
+class RegistrationViewTests(TestCase):
+    def setUp(self):
+        self.url = reverse('onlinecourse:registration')
+
+    def test_registration_requires_every_named_field(self):
+        response = self.client.post(self.url, {
+            'username': 'new-learner',
+            'psw': 'p@ssword123',
+            'firstname': 'New',
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response, 'All registration fields are required.', status_code=400
+        )
+        self.assertFalse(User.objects.filter(username='new-learner').exists())
+
+    def test_registration_normalizes_names_and_signs_in(self):
+        response = self.client.post(self.url, {
+            'username': '  new-learner  ',
+            'psw': 'p@ssword123',
+            'firstname': '  New ',
+            'lastname': ' Learner  ',
+        })
+        self.assertRedirects(response, reverse('onlinecourse:index'))
+        user = User.objects.get(username='new-learner')
+        self.assertEqual((user.first_name, user.last_name), ('New', 'Learner'))
+        self.assertEqual(int(self.client.session['_auth_user_id']), user.id)
+
+    def test_registration_reports_concurrent_duplicate_cleanly(self):
+        with patch(
+            'onlinecourse.views.User.objects.create_user',
+            side_effect=IntegrityError('duplicate username'),
+        ):
+            response = self.client.post(self.url, {
+                'username': 'racing-user',
+                'psw': 'p@ssword123',
+                'firstname': 'Racing',
+                'lastname': 'User',
+            })
+        self.assertEqual(response.status_code, 409)
+        self.assertContains(response, 'User already exists.', status_code=409)
+
+    def test_registration_rejects_unsupported_methods(self):
+        self.assertEqual(self.client.put(self.url).status_code, 405)
 
 
 class EnrollmentViewTests(OnlineCourseTestBase):

@@ -3,44 +3,59 @@ from django.http import HttpResponseBadRequest, HttpResponseRedirect
 # <HINT> Import any new Models here
 from .models import Course, Enrollment, Question, Choice, Submission
 from django.contrib.auth.models import User
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.db.models import F
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth import login, logout, authenticate
-import logging
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
 # Create your views here.
 
 
+@require_http_methods(["GET", "POST"])
 def registration_request(request):
     context = {}
     if request.method == 'GET':
         return render(request, 'onlinecourse/user_registration_bootstrap.html', context)
-    elif request.method == 'POST':
-        # Check if user exists
-        username = request.POST['username']
-        password = request.POST['psw']
-        first_name = request.POST['firstname']
-        last_name = request.POST['lastname']
-        user_exist = False
-        try:
-            User.objects.get(username=username)
-            user_exist = True
-        except:
-            logger.error("New user")
-        if not user_exist:
+
+    username = request.POST.get('username', '').strip()
+    password = request.POST.get('psw', '')
+    first_name = request.POST.get('firstname', '').strip()
+    last_name = request.POST.get('lastname', '').strip()
+    if not all((username, password, first_name, last_name)):
+        context['message'] = "All registration fields are required."
+        return render(
+            request,
+            'onlinecourse/user_registration_bootstrap.html',
+            context,
+            status=400,
+        )
+
+    if User.objects.filter(username=username).exists():
+        context['message'] = "User already exists."
+        return render(
+            request,
+            'onlinecourse/user_registration_bootstrap.html',
+            context,
+            status=409,
+        )
+
+    try:
+        with transaction.atomic():
             user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name,
                                             password=password)
-            login(request, user)
-            return redirect("onlinecourse:index")
-        else:
-            context['message'] = "User already exists."
-            return render(request, 'onlinecourse/user_registration_bootstrap.html', context)
+    except IntegrityError:
+        context['message'] = "User already exists."
+        return render(
+            request,
+            'onlinecourse/user_registration_bootstrap.html',
+            context,
+            status=409,
+        )
+    login(request, user)
+    return redirect("onlinecourse:index")
 
 
 def login_request(request):
