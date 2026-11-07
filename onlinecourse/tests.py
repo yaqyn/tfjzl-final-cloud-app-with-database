@@ -2,6 +2,7 @@ from datetime import date
 
 from django.contrib.admin.sites import site as admin_site
 from django.contrib.auth.models import User
+from django.db import IntegrityError, transaction
 from django.test import TestCase
 from django.urls import reverse
 
@@ -109,6 +110,14 @@ class ModelTests(OnlineCourseTestBase):
         self.assertEqual(submission.enrollment, self.enrollment)
         self.assertIn(self.correct_choice, submission.choices.all())
 
+    def test_user_cannot_enroll_in_the_same_course_twice(self):
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Enrollment.objects.create(
+                user=self.learner_user,
+                course=self.course,
+                mode='audit',
+            )
+
 
 class AdminTests(TestCase):
     def test_all_seven_models_are_registered(self):
@@ -155,6 +164,26 @@ class CourseDetailTemplateTests(OnlineCourseTestBase):
         )
         self.assertContains(response, 'Learning Django')
         self.assertContains(response, 'What is Django')
+
+
+class EnrollmentViewTests(OnlineCourseTestBase):
+    def test_repeated_enrollment_is_idempotent_and_counted_once(self):
+        self.client.login(username='other', password='p@ssword123')
+        url = reverse('onlinecourse:enroll', args=(self.course.id,))
+
+        first = self.client.get(url)
+        second = self.client.get(url)
+
+        self.assertEqual(first.status_code, 302)
+        self.assertEqual(second.status_code, 302)
+        self.assertEqual(
+            Enrollment.objects.filter(
+                user=self.other_user, course=self.course
+            ).count(),
+            1,
+        )
+        self.course.refresh_from_db()
+        self.assertEqual(self.course.total_enrollment, 1)
 
 
 class SubmitViewTests(OnlineCourseTestBase):

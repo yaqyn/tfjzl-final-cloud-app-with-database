@@ -94,6 +94,14 @@ class Enrollment(models.Model):
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
     rating = models.FloatField(default=5.0)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'course'],
+                name='unique_enrollment_user_course',
+            ),
+        ]
+
 
 # One enrollment could have multiple submissions
 # One submission could have multiple choices

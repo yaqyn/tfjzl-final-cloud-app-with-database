@@ -3,6 +3,8 @@ from django.http import HttpResponseBadRequest, HttpResponseRedirect
 # <HINT> Import any new Models here
 from .models import Course, Enrollment, Question, Choice, Submission
 from django.contrib.auth.models import User
+from django.db import transaction
+from django.db.models import F
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -95,12 +97,17 @@ def enroll(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
     user = request.user
 
-    is_enrolled = check_if_enrolled(user, course)
-    if not is_enrolled and user.is_authenticated:
-        # Create an enrollment
-        Enrollment.objects.create(user=user, course=course, mode='honor')
-        course.total_enrollment += 1
-        course.save()
+    if user.is_authenticated:
+        with transaction.atomic():
+            _, created = Enrollment.objects.get_or_create(
+                user=user,
+                course=course,
+                defaults={'mode': 'honor'},
+            )
+            if created:
+                Course.objects.filter(pk=course.pk).update(
+                    total_enrollment=F('total_enrollment') + 1
+                )
 
     return HttpResponseRedirect(reverse(viewname='onlinecourse:course_details', args=(course.id,)))
 
