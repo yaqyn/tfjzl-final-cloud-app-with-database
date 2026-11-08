@@ -28,7 +28,7 @@ This repository implements the IBM Skills Network final project assessment featu
 - `submit` and `show_exam_result` views with authentication, enrollment and
   submission-ownership checks
 - Bootstrap exam result page with pass/fail messages and per-choice feedback
-- 24 automated tests and a deterministic demo-data command
+- 30 automated tests and a deterministic demo-data command
 
 ### Local setup
 

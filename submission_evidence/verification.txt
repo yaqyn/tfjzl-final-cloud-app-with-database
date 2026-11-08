@@ -20,6 +20,6 @@ PASS  result page shows score 100/100
 PASS  result page shows course name
 PASS  result page shows question
 PASS  result page shows correct answer
-PASS  result page is a real submission URL  [http://127.0.0.1:8000/onlinecourse/course/1/submission/1/result/]
+PASS  result page is a real submission URL  [http://127.0.0.1:8000/onlinecourse/course/1/submission/2/result/]
 
 Result: 18/18 checks passed

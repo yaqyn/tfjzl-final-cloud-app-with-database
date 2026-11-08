@@ -84,7 +84,7 @@ Validation performed on the real project:
 python3 manage.py makemigrations   -> onlinecourse/migrations/0001_initial.py
 python3 manage.py migrate          -> applied successfully
 python3 manage.py check            -> System check identified no issues
-python3 manage.py test             -> Ran 24 tests ... OK
+python3 manage.py test             -> Ran 30 tests ... OK
 ```
 
 Demo accounts: `admin` / `p@ssword123` and `learner` / `p@ssword123`.
