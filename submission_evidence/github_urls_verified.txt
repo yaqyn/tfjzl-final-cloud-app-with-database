@@ -1,0 +1,21 @@
+GitHub publication verification
+===============================
+Repository: https://github.com/yaqyn/tfjzl-final-cloud-app-with-database
+Branch: main
+Commit: 089964af9a531f5717622d945fa25330fce12137
+Verified: 2026-11-06 06:53 UTC
+Method: unauthenticated curl -L (HTTP status), plus raw.githubusercontent.com
+content checks for required symbols.
+
+Q1 200 https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/models.py
+   raw 200; found Question, Choice, Submission, is_get_score
+Q2 200 https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/admin.py
+   raw 200; found QuestionInline, ChoiceInline, QuestionAdmin, LessonAdmin
+Q4 200 https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/templates/onlinecourse/course_detail_bootstrap.html
+   raw 200; found Start Exam, csrf_token, onlinecourse:submit, checkbox
+Q5 200 https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/views.py
+   raw 200; found submit and show_exam_result
+Q6 200 https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/urls.py
+   raw 200; found submit and exam_result routes
+Q3 200 https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/submission_evidence/03-admin-site.png
+Q7 200 https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/submission_evidence/07-final.png

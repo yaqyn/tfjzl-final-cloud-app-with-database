@@ -88,3 +88,13 @@ python3 manage.py test             -> Ran 24 tests ... OK
 ```
 
 Demo accounts: `admin` / `p@ssword123` and `learner` / `p@ssword123`.
+
+## GitHub URL verification
+
+All five source-file URLs were checked anonymously with `curl -L` on
+2026-11-06 against commit `089964af9a531f5717622d945fa25330fce12137`; each returned HTTP 200. The public screenshot
+links were also checked and returned HTTP 200. Full log:
+`submission_evidence/github_urls_verified.txt`.
+
+- Admin screenshot: https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/submission_evidence/03-admin-site.png
+- Final exam screenshot: https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/submission_evidence/07-final.png
