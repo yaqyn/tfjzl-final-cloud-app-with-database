@@ -2,10 +2,13 @@ GitHub publication verification
 ===============================
 Repository: https://github.com/yaqyn/tfjzl-final-cloud-app-with-database
 Branch: main
-Commit: 089964af9a531f5717622d945fa25330fce12137
-Verified: 2026-11-06 06:53 UTC
+Source commit verified: b7c9548930ab9f4cb6f1bc886380035c9e52b3c1
+Verified: 2026-11-08
 Method: unauthenticated curl -L (HTTP status), plus raw.githubusercontent.com
 content checks for required symbols.
+
+The final follow-up commit changes only this log and the submission answers;
+the five source files below are unchanged from the verified commit.
 
 Q1 200 https://github.com/yaqyn/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/models.py
    raw 200; found Question, Choice, Submission, is_get_score

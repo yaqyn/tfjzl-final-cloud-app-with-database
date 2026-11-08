@@ -92,7 +92,7 @@ Demo accounts: `admin` / `p@ssword123` and `learner` / `p@ssword123`.
 ## GitHub URL verification
 
 All five source-file URLs were checked anonymously with `curl -L` on
-2026-11-06 against commit `089964af9a531f5717622d945fa25330fce12137`; each returned HTTP 200. The public screenshot
+2026-11-08 against source commit `b7c9548930ab9f4cb6f1bc886380035c9e52b3c1`; each returned HTTP 200. The public screenshot
 links were also checked and returned HTTP 200. Full log:
 `submission_evidence/github_urls_verified.txt`.
 
